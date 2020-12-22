@@ -5,6 +5,7 @@ def main(stdscr):
     curses.curs_set(0) # disable cursor blinking
     stdscr.nodelay(1) # so that the app dont wait till the user presses a key -> getch() function is now non blocking
     stdscr.timeout(150) # 150 ms timeout, how long we wait till the user can press something
+
     sh, sw = stdscr.getmaxyx()
     box = [[3,3],[sh-3,sw-3]]
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle
@@ -37,6 +38,15 @@ def main(stdscr):
 
         stdscr.addstr(snake[-1][0], snake[-1][1], ' ') # removes snake last body so original body still remains -> ###
         snake.pop() # removes last element of array
+
+        if (snake[0][0] in [box[0][0], box[1][0]] or
+            snake[0][1] in [box[0][1], box[1][1]] or
+            snake[0] in snake[1:]): # if snake hits wall or his tail
+            msg= "Game Over!"
+            stdscr.addstr(sh//2, sw//2 - len(msg)//2, msg) # print message in center of screen
+            stdscr.nodelay(0) # makes getch blocking again, so the user has to press a key to exit game
+            stdscr.getch()
+            break
 
         stdscr.refresh()
 
