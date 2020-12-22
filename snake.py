@@ -1,6 +1,13 @@
 import curses
 from curses import textpad
 
+def print_score(stdscr, score):
+    sh, sw = stdscr.getmaxyx()
+    score_text = "Score: {}".format(score)
+    stdscr.addstr(0, sw//2 - len(score_text)//2, score_text)
+    stdscr.refresh()
+
+
 def main(stdscr):
     curses.curs_set(0) # disable cursor blinking
     stdscr.nodelay(1) # so that the app dont wait till the user presses a key -> getch() function is now non blocking
@@ -15,6 +22,9 @@ def main(stdscr):
     
     for y,x in snake:
         stdscr.addstr(y, x, '#') # print initial snake in terminal
+
+    score = 0
+    print_score(stdscr, score)
 
     while 1:
         key = stdscr.getch() # get user keyboard input
