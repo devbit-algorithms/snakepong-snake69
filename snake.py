@@ -18,9 +18,13 @@ def main(stdscr):
 
     snake = [[sh//4, sw//4+1], [sh//4, sw//4], [sh//4, sw//4-1]] # initial body of snake -> ###
     direction = curses.KEY_RIGHT # goes to right
-    
+
     for y,x in snake:
         stdscr.addstr(y, x, '#') # print initial snake in terminal
+    
+    paddle = [[4,4],[5,4],[6,4],[7,4],[8,4],[9,4],[10,4]]
+    for y,x in paddle:
+        stdscr.addstr(y, x, '|')
 
     score = 0
     print_score(stdscr, score)
@@ -56,6 +60,12 @@ def main(stdscr):
             stdscr.nodelay(0) # makes getch blocking again, so the user has to press a key to exit game
             stdscr.getch()
             break
+
+        
+
+
+
+
 
         stdscr.refresh()
 
