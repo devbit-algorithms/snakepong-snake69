@@ -4,9 +4,8 @@ from curses import textpad
 def print_score(stdscr, score):
     sh, sw = stdscr.getmaxyx()
     score_text = "Score: {}".format(score)
-    stdscr.addstr(0, sw//2 - len(score_text)//2, score_text)
+    stdscr.addstr(0, sw//4 - len(score_text)//4, score_text)
     stdscr.refresh()
-
 
 def main(stdscr):
     curses.curs_set(0) # disable cursor blinking
@@ -14,10 +13,10 @@ def main(stdscr):
     stdscr.timeout(150) # 150 ms timeout, how long we wait till the user can press something
 
     sh, sw = stdscr.getmaxyx()
-    box = [[3,3],[sh-3,sw-3]]
+    box = [[3,3],[sh-3,sw/2-3]]
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle
 
-    snake = [[sh//2, sw//2+1], [sh//2, sw//2], [sh//2, sw//2-1]] # initial body of snake -> ###
+    snake = [[sh//4, sw//4+1], [sh//4, sw//4], [sh//4, sw//4-1]] # initial body of snake -> ###
     direction = curses.KEY_RIGHT # goes to right
     
     for y,x in snake:
@@ -53,7 +52,7 @@ def main(stdscr):
             snake[0][1] in [box[0][1], box[1][1]] or
             snake[0] in snake[1:]): # if snake hits wall or his tail
             msg= "Game Over!"
-            stdscr.addstr(sh//2, sw//2 - len(msg)//2, msg) # print message in center of screen
+            stdscr.addstr(sh//2, sw//4 - len(msg)//4, msg) # print message in center of screen
             stdscr.nodelay(0) # makes getch blocking again, so the user has to press a key to exit game
             stdscr.getch()
             break
