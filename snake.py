@@ -22,7 +22,7 @@ def main(stdscr):
     for y,x in snake:
         stdscr.addstr(y, x, '#') # print initial snake in terminal
     
-    paddle = [[4,4],[5,4],[6,4],[7,4],[8,4],[9,4],[10,4]]
+    paddle = [[10,4],[9,4],[8,4],[7,4],[6,4],[5,4],[4,4]]
     for y,x in paddle:
         stdscr.addstr(y, x, '|')
 
@@ -51,6 +51,12 @@ def main(stdscr):
 
         stdscr.addstr(snake[-1][0], snake[-1][1], ' ') # removes snake last body so original body still remains -> ###
         snake.pop() # removes last element of array
+
+        paddle.insert(0, [paddle[0][0]+1,paddle[0][1]])
+        stdscr.addstr(paddle[0][0], paddle[0][1], '|')
+
+        stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
+        paddle.pop()
 
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or
