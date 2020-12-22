@@ -55,10 +55,12 @@ def main(stdscr):
 
         snake.insert(0, new_head)
         stdscr.addstr(new_head[0], new_head[1], '#') # snake would move but will add body -> ####
-        
+
         if ball_hit != "left_wall":
             stdscr.addstr(snake[-1][0], snake[-1][1], ' ') # removes snake last body so original body still remains -> ###
             snake.pop() # removes last element of array
+        else:
+            ball_hit = "paddle"
 
         if (paddle[0][0] in [box[0][0]+1, box[1][0]-1] or
             paddle[-1][0] in [box[0][0]+1, box[0][0]+1]):
@@ -105,6 +107,7 @@ def main(stdscr):
                 prev_ball_hit = ball_hit
                 ball_hit = "snakeright"
             j+=1
+
         j = 0
         while j < 4:
             if(ball[0][1] in [paddle[j][1]+1] and
@@ -157,9 +160,9 @@ def main(stdscr):
                 ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
         elif ball_hit == "left_wall":
             ball.insert(0, [ball[0][0]-1, ball[0][1]+2])
-            ball_hit = "paddle"
             score += 1
             ntail += 1
+            print_score(stdscr, score)
 
         stdscr.addstr(ball[0][0], ball[0][1], '*')
 
