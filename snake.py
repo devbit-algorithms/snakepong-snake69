@@ -28,6 +28,7 @@ def main(stdscr):
 
     score = 0
     print_score(stdscr, score)
+    i = 0
 
     while 1:
         key = stdscr.getch() # get user keyboard input
@@ -52,11 +53,26 @@ def main(stdscr):
         stdscr.addstr(snake[-1][0], snake[-1][1], ' ') # removes snake last body so original body still remains -> ###
         snake.pop() # removes last element of array
 
-        paddle.insert(0, [paddle[0][0]+1,paddle[0][1]])
-        stdscr.addstr(paddle[0][0], paddle[0][1], '|')
+        if (paddle[0][0] in [box[0][0]+1, box[1][0]-1] or
+            paddle[-1][0] in [box[0][0]+1, box[0][0]+1]):
+            i += 1
+        
+        if i % 2 == 1:
+            paddle.insert(0, [paddle[0][0]+1,paddle[0][1]])
+            stdscr.addstr(paddle[0][0], paddle[0][1], '|')
 
-        stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
-        paddle.pop()
+            stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
+            paddle.pop()
+
+        if i % 2 == 0:
+            paddle.reverse()
+            paddle.insert(0, [paddle[0][0]-1,paddle[0][1]])
+            stdscr.addstr(paddle[0][0], paddle[0][1], '|')
+
+            stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
+            paddle.pop()
+            paddle.reverse()
+
 
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or
