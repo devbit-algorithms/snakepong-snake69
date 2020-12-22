@@ -22,9 +22,12 @@ def main(stdscr):
     for y,x in snake:
         stdscr.addstr(y, x, '#') # print initial snake in terminal
     
-    paddle = [[10,4],[9,4],[8,4],[7,4],[6,4],[5,4],[4,4]]
+    paddle = [[8,4],[7,4],[6,4],[5,4],[4,4]]
     for y,x in paddle:
         stdscr.addstr(y, x, '|')
+
+    bal = [[sh/2,5]]
+    stdscr.addstr(bal[0][0], bal[0][1], '*')
 
     score = 0
     print_score(stdscr, score)
@@ -74,6 +77,8 @@ def main(stdscr):
             paddle.reverse()
 
 
+
+
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or
             snake[0] in snake[1:]): # if snake hits wall or his tail
@@ -82,12 +87,6 @@ def main(stdscr):
             stdscr.nodelay(0) # makes getch blocking again, so the user has to press a key to exit game
             stdscr.getch()
             break
-
-        
-
-
-
-
 
         stdscr.refresh()
 
