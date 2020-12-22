@@ -3,19 +3,19 @@ from curses import textpad
 
 def main(stdscr):
     curses.curs_set(0) # disable cursor blinking
-
+    stdscr.nodelay(1) # so that the app dont wait till the user presses a key -> getch() function is now non blocking
+    stdscr.timeout(150) # 150 ms timeout, how long we wait till the user can press something
     sh, sw = stdscr.getmaxyx()
     box = [[3,3],[sh-3,sw-3]]
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle
 
-    snake = [[sh//2, sw//2+1], [sh//2, sw//2-1], [sh//2, sw//2-1]] # initial body of snake -> ###
+    snake = [[sh//2, sw//2+1], [sh//2, sw//2], [sh//2, sw//2-1]] # initial body of snake -> ###
     direction = curses.KEY_RIGHT # goes to right
     
     for y,x in snake:
         stdscr.addstr(y, x, '#') # print initial snake in terminal
 
     while 1:
-
         key = stdscr.getch() # get user keyboard input
 
         if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP, curses.KEY_DOWN]:
