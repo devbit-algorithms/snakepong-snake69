@@ -7,6 +7,39 @@ def print_score(stdscr, score):
     stdscr.addstr(0, sw//4 - len(score_text)//4, score_text)
     stdscr.refresh()
 
+def print_snake(stdscr, snake, new_head, ball_hit):
+    snake.insert(0, new_head)
+    stdscr.addstr(new_head[0], new_head[1], '#') # snake would move but will add body -> ####
+    if ball_hit != "left_wall":
+        stdscr.addstr(snake[-1][0], snake[-1][1], ' ') # removes snake last body so original body still remains -> ###
+        snake.pop() # removes last element of array
+
+def print_ball(stdscr, ball):
+    stdscr.addstr(ball[0][0], ball[0][1], '*')
+    stdscr.addstr(ball[-1][0], ball[-1][1], ' ')
+    ball.pop()
+
+def print_paddle(stdscr, paddle, i):
+    if i % 2 == 1:
+        paddle.insert(0, [paddle[0][0]+1,paddle[0][1]])
+        stdscr.addstr(paddle[0][0], paddle[0][1], '|')
+        stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
+        paddle.pop()
+
+    if i % 2 == 0:
+        paddle.reverse()
+        paddle.insert(0, [paddle[0][0]-1,paddle[0][1]])
+        stdscr.addstr(paddle[0][0], paddle[0][1], '|')
+        stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
+        paddle.pop()
+        paddle.reverse()
+
+def print_terminal(stdscr, score, snake, new_head, ball_hit, ball, paddle, i):
+    print_score(stdscr, score)
+    print_ball(stdscr, ball)
+    print_snake(stdscr, snake, new_head, ball_hit)
+    print_paddle(stdscr, paddle, i)
+
 def main(stdscr):
     curses.curs_set(0) # disable cursor blinking
     stdscr.nodelay(1) # so that the app dont wait till the user presses a key -> getch() function is now non blocking
@@ -53,34 +86,9 @@ def main(stdscr):
         elif direction == curses.KEY_DOWN:
             new_head = [head[0]+1, head[1]]
 
-        snake.insert(0, new_head)
-        stdscr.addstr(new_head[0], new_head[1], '#') # snake would move but will add body -> ####
-
-        if ball_hit != "left_wall":
-            stdscr.addstr(snake[-1][0], snake[-1][1], ' ') # removes snake last body so original body still remains -> ###
-            snake.pop() # removes last element of array
-        else:
-            ball_hit = "paddle"
-
         if (paddle[0][0] in [box[0][0]+1, box[1][0]-1] or
             paddle[-1][0] in [box[0][0]+1, box[0][0]+1]):
-            i += 1
-        
-        if i % 2 == 1:
-            paddle.insert(0, [paddle[0][0]+1,paddle[0][1]])
-            stdscr.addstr(paddle[0][0], paddle[0][1], '|')
-
-            stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
-            paddle.pop()
-
-        if i % 2 == 0:
-            paddle.reverse()
-            paddle.insert(0, [paddle[0][0]-1,paddle[0][1]])
-            stdscr.addstr(paddle[0][0], paddle[0][1], '|')
-
-            stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
-            paddle.pop()
-            paddle.reverse()
+            i += 1    
 
         if ball[0][0] in [box[1][0]-1]:
             prev_ball_hit = ball_hit
@@ -163,14 +171,12 @@ def main(stdscr):
             ball.insert(0, [ball[0][0], ball[0][1]+2])
             score += 1
             ntail += 1
-            print_score(stdscr, score)
+            
+        print_terminal(stdscr, score, snake, new_head, ball_hit, ball, paddle, i)
 
-        stdscr.addstr(ball[0][0], ball[0][1], '*')
-
-        stdscr.addstr(ball[-1][0], ball[-1][1], ' ')
-        ball.pop()
-
-
+        if(ball_hit == "left_wall"):
+            ball_hit = "paddle"
+            
 
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or
