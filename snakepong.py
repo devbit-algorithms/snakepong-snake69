@@ -20,14 +20,14 @@ def print_ball(stdscr, ball):
     ball.pop()
 
 def print_paddle(stdscr, paddle, i):
-    if i % 2 == 1:
+    if i % 2 == 1: # if paddle hits upper wall, paddle needs to go down
         paddle.insert(0, [paddle[0][0]+1,paddle[0][1]])
         stdscr.addstr(paddle[0][0], paddle[0][1], '|')
         stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
         paddle.pop()
 
-    if i % 2 == 0:
-        paddle.reverse()
+    if i % 2 == 0: # if paddle hits lower wall
+        paddle.reverse() # need to reverse because paddle has to go up instead of down
         paddle.insert(0, [paddle[0][0]-1,paddle[0][1]])
         stdscr.addstr(paddle[0][0], paddle[0][1], '|')
         stdscr.addstr(paddle[-1][0], paddle[-1][1], ' ')
@@ -180,7 +180,6 @@ def main(stdscr):
         if(ball_hit == "left_wall"):
             ball_hit = "paddle"
             
-
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or
             snake[0] in snake[1:] or # if snake hits wall or his tail
