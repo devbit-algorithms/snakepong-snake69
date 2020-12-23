@@ -45,9 +45,9 @@ def main(stdscr):
     stdscr.nodelay(1) # so that the app dont wait till the user presses a key -> getch() function is now non blocking
     stdscr.timeout(150) # 150 ms timeout, how long we wait till the user can press something
 
-    sh, sw = stdscr.getmaxyx()
-    box = [[3,3],[sh-3,sw/2-3]]
-    textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle
+    sh, sw = stdscr.getmaxyx() # get max height and width of terminal screen
+    box = [[3,3],[sh-3,sw/2-3]] # create a box to play the game in
+    textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle with values of box
 
     snake = [[sh//4, sw//4+1], [sh//4, sw//4], [sh//4, sw//4-1]] # initial body of snake -> ###
     direction = curses.KEY_RIGHT # goes to right
@@ -57,10 +57,10 @@ def main(stdscr):
     
     paddle = [[8,4],[7,4],[6,4],[5,4],[4,4]]
     for y,x in paddle:
-        stdscr.addstr(y, x, '|')
+        stdscr.addstr(y, x, '|') # print initial paddle in terminal
 
     ball = [[sh/2,5]]
-    stdscr.addstr(ball[0][0], ball[0][1], '*')
+    stdscr.addstr(ball[0][0], ball[0][1], '*') # print initial ball in terminal
 
     score = 0
     print_score(stdscr, score)
@@ -69,37 +69,38 @@ def main(stdscr):
     prev_ball_hit = ""
     directionball = "right"
     ntail = 2
+
     while 1:
         key = stdscr.getch() # get user keyboard input
 
         if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP, curses.KEY_DOWN]:
             direction = key # if key is one of these, change it to that value
 
-        head = snake[0]
+        head = snake[0] # head of snake is first element -> snake[0]
 
         if direction == curses.KEY_RIGHT:
-            new_head = [head[0], head[1]+1]
+            new_head = [head[0], head[1]+1] # if arrow key right is pressed, x axis will be incremented
         elif direction == curses.KEY_LEFT:
-            new_head = [head[0], head[1]-1]
+            new_head = [head[0], head[1]-1] # if arrow key left is pressed, x axis will be decremented
         elif direction == curses.KEY_UP:
-            new_head = [head[0]-1, head[1]]
+            new_head = [head[0]-1, head[1]] # if arrow key up is pressed, y axis will be decremented
         elif direction == curses.KEY_DOWN:
-            new_head = [head[0]+1, head[1]]
+            new_head = [head[0]+1, head[1]] # if arrow key down is pressed, y axis will be incremented
 
         if (paddle[0][0] in [box[0][0]+1, box[1][0]-1] or
             paddle[-1][0] in [box[0][0]+1, box[0][0]+1]):
-            i += 1    
+            i += 1 # if paddle hits wall increment i with 1
 
-        if ball[0][0] in [box[1][0]-1]:
+        if ball[0][0] in [box[1][0]-1]: # if ball hits lower wall
             prev_ball_hit = ball_hit
             ball_hit = "lower_wall"
-        elif ball[0][0] in [box[0][0]+1]:
+        elif ball[0][0] in [box[0][0]+1]: # if ball hits upper wall
             prev_ball_hit = ball_hit
             ball_hit = "upper_wall"
-        elif ball[0][1] in [box[1][1]-1]:
+        elif ball[0][1] in [box[1][1]-1]: # if ball hits right wall
             prev_ball_hit = ball_hit
             ball_hit = "right_wall"
-        elif ball[0][1] in [box[0][1]+1]:
+        elif ball[0][1] in [box[0][1]+1]: # if ball hits left wall
             prev_ball_hit = ball_hit
             ball_hit = "left_wall"
 
@@ -107,11 +108,11 @@ def main(stdscr):
 
         while j < ntail:
             if(ball[0][1] in [snake[j][1]-1] and
-                ball[0][0] in [snake[j][0]]):
+                ball[0][0] in [snake[j][0]]): # if ball hits left part of snake
                 prev_ball_hit = ball_hit
                 ball_hit = "snakeleft"
             elif(ball[0][1] in [snake[j][1]+1] and
-                ball[0][0] in [snake[j][0]]):
+                ball[0][0] in [snake[j][0]]): # if ball hits right part of snake
                 prev_ball_hit = ball_hit
                 ball_hit = "snakeright"
             j+=1
@@ -119,11 +120,12 @@ def main(stdscr):
         j = 0
         while j < 4:
             if(ball[0][1] in [paddle[j][1]+1] and
-                ball[0][0] in [paddle[j][0]]):
+                ball[0][0] in [paddle[j][0]]): # if ball hits paddle
                 prev_ball_hit = ball_hit
                 ball_hit = "paddle"
             j+=1
 
+        # moves ball inside the walls with an algoritm
         if ball_hit == "paddle":
             directionball = "right"
             if prev_ball_hit == "upper_wall":
@@ -171,7 +173,8 @@ def main(stdscr):
             ball.insert(0, [ball[0][0], ball[0][1]+2])
             score += 1
             ntail += 1
-            
+        
+        # prints snake, paddle and ball in terminal
         print_terminal(stdscr, score, snake, new_head, ball_hit, ball, paddle, i)
 
         if(ball_hit == "left_wall"):
