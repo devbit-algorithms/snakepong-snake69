@@ -40,7 +40,7 @@ def print_terminal(stdscr, score, snake, new_head, ball_hit, ball, paddle, i):
     print_snake(stdscr, snake, new_head, ball_hit)
     print_paddle(stdscr, paddle, i)
 
-def main(stdscr):
+def game_logic(stdscr):
     curses.curs_set(0) # disable cursor blinking
     stdscr.nodelay(1) # so that the app dont wait till the user presses a key -> getch() function is now non blocking
     stdscr.timeout(150) # 150 ms timeout, how long we wait till the user can press something
@@ -192,4 +192,8 @@ def main(stdscr):
 
         stdscr.refresh()
 
-curses.wrapper(main)
+curses.wrapper(game_logic)
+
+
+def main(stdscr):
+    game_logic(stdscr)
