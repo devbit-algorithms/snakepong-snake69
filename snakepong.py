@@ -159,7 +159,8 @@ def main(stdscr):
             else:
                 ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
         elif ball_hit == "left_wall":
-            ball.insert(0, [ball[0][0]-1, ball[0][1]+2])
+            directionball = "right"
+            ball.insert(0, [ball[0][0], ball[0][1]+2])
             score += 1
             ntail += 1
             print_score(stdscr, score)
@@ -173,7 +174,8 @@ def main(stdscr):
 
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or
-            snake[0] in snake[1:]): # if snake hits wall or his tail
+            snake[0] in snake[1:] or # if snake hits wall or his tail
+            snake[0] in paddle[1:]): # if snake hits paddle
             msg= "Game Over!"
             stdscr.addstr(sh//2, sw//4 - len(msg)//4, msg) # print message in center of screen
             stdscr.nodelay(0) # makes getch blocking again, so the user has to press a key to exit game
