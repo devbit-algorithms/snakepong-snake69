@@ -1,6 +1,6 @@
 import curses
 from curses import textpad
-import score
+import elements
 def print_score(stdscr, score):
     sh, sw = stdscr.getmaxyx()
     score_text = "Score: {}".format(score)
@@ -50,7 +50,7 @@ def game_logic(stdscr):
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle with values of box
 
 
-    snake = [[sh//4, sw//4+1], [sh//4, sw//4], [sh//4, sw//4-1]] # initial body of snake -> ###
+    snake = [[sh//3, sw//3+1], [sh//3, sw//3], [sh//3, sw//3-1]] # initial body of snake -> ###
     direction = curses.KEY_RIGHT # goes to right
 
     for y,x in snake:
@@ -62,12 +62,8 @@ def game_logic(stdscr):
 
     ball = [[sh/2,5]]
     stdscr.addstr(ball[0][0], ball[0][1], '*')
-    print_score(stdscr, score.score)
-    i = 0
-    ball_hit = "paddle"
-    prev_ball_hit = ""
-    directionball = "right"
-    ntail = 2  
+    print_score(stdscr, elements.score)
+
     while 1:
         key = stdscr.getch() # get user keyboard input
 
@@ -87,96 +83,96 @@ def game_logic(stdscr):
 
         if (paddle[0][0] in [box[0][0]+1, box[1][0]-1] or
             paddle[-1][0] in [box[0][0]+1, box[0][0]+1]):
-            i += 1 # if paddle hits wall increment i with 1
+            elements.i += 1 # if paddle hits wall increment i with 1
 
         if ball[0][0] in [box[1][0]-1]: # if ball hits lower wall
-            prev_ball_hit = ball_hit
-            ball_hit = "lower_wall"
+            elements.prev_ball_hit = elements.ball_hit
+            elements.ball_hit = "lower_wall"
         elif ball[0][0] in [box[0][0]+1]: # if ball hits upper wall
-            prev_ball_hit = ball_hit
-            ball_hit = "upper_wall"
+            elements.prev_ball_hit = elements.ball_hit
+            elements.ball_hit = "upper_wall"
         elif ball[0][1] in [box[1][1]-1]: # if ball hits right wall
-            prev_ball_hit = ball_hit
-            ball_hit = "right_wall"
+            elements.prev_ball_hit = elements.ball_hit
+            elements.ball_hit = "right_wall"
         elif ball[0][1] in [box[0][1]+1]: # if ball hits left wall
-            prev_ball_hit = ball_hit
-            ball_hit = "left_wall"
+            elements.prev_ball_hit = elements.ball_hit
+            elements.ball_hit = "left_wall"
 
         j = 0
 
-        while j < ntail:
+        while j < elements.ntail:
             if(ball[0][1] in [snake[j][1]-1] and
                 ball[0][0] in [snake[j][0]]): # if ball hits left part of snake
-                prev_ball_hit = ball_hit
-                ball_hit = "snakeleft"
+                elements.prev_ball_hit = elements.ball_hit
+                elements.ball_hit = "snakeleft"
             elif(ball[0][1] in [snake[j][1]+1] and
                 ball[0][0] in [snake[j][0]]): # if ball hits right part of snake
-                prev_ball_hit = ball_hit
-                ball_hit = "snakeright"
+                elements.prev_ball_hit = elements.ball_hit
+                elements.ball_hit = "snakeright"
             j+=1
 
         j = 0
         while j < 4:
             if(ball[0][1] in [paddle[j][1]+1] and
                 ball[0][0] in [paddle[j][0]]): # if ball hits paddle
-                prev_ball_hit = ball_hit
-                ball_hit = "paddle"
+                elements.prev_ball_hit = elements.ball_hit
+                elements.ball_hit = "paddle"
             j+=1
 
         # moves ball inside the walls with an algoritm
-        if ball_hit == "paddle":
-            directionball = "right"
-            if prev_ball_hit == "upper_wall":
+        if elements.ball_hit == "paddle":
+            elements.directionball = "right"
+            if elements.prev_ball_hit == "upper_wall":
                 ball.insert(0, [ball[0][0]+1, ball[0][1]+1])
-            elif prev_ball_hit == "lower_wall":
+            elif elements.prev_ball_hit == "lower_wall":
                 ball.insert(0, [ball[0][0]-1, ball[0][1]+1])
             else:
                 ball.insert(0, [ball[0][0]-1, ball[0][1]+1])
-        elif ball_hit == "lower_wall":
-            if directionball == "left":
+        elif elements.ball_hit == "lower_wall":
+            if elements.directionball == "left":
                 ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
             else:
                 ball.insert(0, [ball[0][0]-1, ball[0][1]+1])
-        elif ball_hit == "snakeleft":
-            directionball = "left"
-            if prev_ball_hit == "upper_wall":
+        elif elements.ball_hit == "snakeleft":
+            elements.directionball = "left"
+            if elements.prev_ball_hit == "upper_wall":
                 ball.insert(0, [ball[0][0]+1, ball[0][1]-1])
-            elif prev_ball_hit == "lower_wall":
+            elif elements.prev_ball_hit == "lower_wall":
                 ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
             else:
                 ball.insert(0, [ball[0][0]-1, ball[0][1]+1])
-        elif ball_hit == "upper_wall":
-            if directionball == "left":
-                ball.insert(0, [ball[0][0]+1, ball[0][1]-1])
-            else:
-                ball.insert(0, [ball[0][0]+1, ball[0][1]+1])
-        elif ball_hit == "right_wall":
-            directionball = "left"
-            if prev_ball_hit == "lower_wall":
-                ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
-            elif prev_ball_hit == "upper_wall":
+        elif elements.ball_hit == "upper_wall":
+            if elements.directionball == "left":
                 ball.insert(0, [ball[0][0]+1, ball[0][1]-1])
             else:
-                ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
-        elif ball_hit == "snakeright":
-            directionball = "left"
-            if prev_ball_hit == "upper_wall":
                 ball.insert(0, [ball[0][0]+1, ball[0][1]+1])
-            elif prev_ball_hit == "lower_wall":
+        elif elements.ball_hit == "right_wall":
+            elements.directionball = "left"
+            if elements.prev_ball_hit == "lower_wall":
+                ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
+            elif elements.prev_ball_hit == "upper_wall":
+                ball.insert(0, [ball[0][0]+1, ball[0][1]-1])
+            else:
+                ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
+        elif elements.ball_hit == "snakeright":
+            elements.directionball = "left"
+            if elements.prev_ball_hit == "upper_wall":
+                ball.insert(0, [ball[0][0]+1, ball[0][1]+1])
+            elif elements.prev_ball_hit == "lower_wall":
                 ball.insert(0, [ball[0][0]-1, ball[0][1]+1])
             else:
                 ball.insert(0, [ball[0][0]-1, ball[0][1]-1])
-        elif ball_hit == "left_wall":
-            directionball = "right"
+        elif elements.ball_hit == "left_wall":
+            elements.directionball = "right"
             ball.insert(0, [ball[0][0], ball[0][1]+2])
-            score.score += 1
-            ntail += 1
+            elements.score += 1
+            elements.ntail += 1
         
         # prints snake, paddle and ball in terminal
-        print_terminal(stdscr, score.score, snake, new_head, ball_hit, ball, paddle, i)
+        print_terminal(stdscr, elements.score, snake, new_head, elements.ball_hit, ball, paddle, elements.i)
 
-        if(ball_hit == "left_wall"):
-            ball_hit = "paddle"
+        if(elements.ball_hit == "left_wall"):
+            elements.ball_hit = "paddle"
             
         if (snake[0][0] in [box[0][0], box[1][0]] or
             snake[0][1] in [box[0][1], box[1][1]] or

@@ -1,9 +1,9 @@
-import score
+import elements
 
 def test_snake_hits():
-    assert score.score == 0
-    score.score += 2
-    assert score.score == 2
-    score.score -= 1
-    assert score.score == 1
+    assert elements.score == 0
+    elements.score += 2
+    assert elements.score == 2
+    elements.score -= 1
+    assert elements.score == 1
 
