@@ -46,7 +46,7 @@ def game_logic(stdscr):
     stdscr.timeout(150) # 150 ms timeout, how long we wait till the user can press something
 
     sh, sw = stdscr.getmaxyx() # get max height and width of terminal screen
-    box = [[3,3],[sh-3,sw/2-3]] # create a box to play the game in
+    box = [[3,3],[sh-3,sw//2-3]] # create a box to play the game in
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle with values of box
 
 
@@ -60,7 +60,7 @@ def game_logic(stdscr):
     for y,x in paddle:
         stdscr.addstr(y, x, '|')
 
-    ball = [[sh/2,5]]
+    ball = [[sh//2,5]]
     stdscr.addstr(ball[0][0], ball[0][1], '*')
     print_score(stdscr, elements.score)
 
