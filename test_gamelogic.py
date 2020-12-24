@@ -1,10 +1,9 @@
-from snakepong import game_logic
+import score
 
 def test_snake_hits():
-    assert 1 == 1
+    assert score.score == 0
+    score.score += 2
+    assert score.score == 2
+    score.score -= 1
+    assert score.score == 1
 
-def hit_wall():
-    assert 5 == 1
-
-def random():
-    assert 1 == 2

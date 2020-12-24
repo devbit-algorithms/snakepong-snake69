@@ -1,6 +1,6 @@
 import curses
 from curses import textpad
-
+import score
 def print_score(stdscr, score):
     sh, sw = stdscr.getmaxyx()
     score_text = "Score: {}".format(score)
@@ -49,6 +49,7 @@ def game_logic(stdscr):
     box = [[3,3],[sh-3,sw/2-3]] # create a box to play the game in
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1]) # makes rectangle with values of box
 
+
     snake = [[sh//4, sw//4+1], [sh//4, sw//4], [sh//4, sw//4-1]] # initial body of snake -> ###
     direction = curses.KEY_RIGHT # goes to right
 
@@ -57,19 +58,16 @@ def game_logic(stdscr):
     
     paddle = [[8,4],[7,4],[6,4],[5,4],[4,4]]
     for y,x in paddle:
-        stdscr.addstr(y, x, '|') # print initial paddle in terminal
+        stdscr.addstr(y, x, '|')
 
     ball = [[sh/2,5]]
-    stdscr.addstr(ball[0][0], ball[0][1], '*') # print initial ball in terminal
-
-    score = 0
-    print_score(stdscr, score)
+    stdscr.addstr(ball[0][0], ball[0][1], '*')
+    print_score(stdscr, score.score)
     i = 0
     ball_hit = "paddle"
     prev_ball_hit = ""
     directionball = "right"
-    ntail = 2
-
+    ntail = 2  
     while 1:
         key = stdscr.getch() # get user keyboard input
 
@@ -171,11 +169,11 @@ def game_logic(stdscr):
         elif ball_hit == "left_wall":
             directionball = "right"
             ball.insert(0, [ball[0][0], ball[0][1]+2])
-            score += 1
+            score.score += 1
             ntail += 1
         
         # prints snake, paddle and ball in terminal
-        print_terminal(stdscr, score, snake, new_head, ball_hit, ball, paddle, i)
+        print_terminal(stdscr, score.score, snake, new_head, ball_hit, ball, paddle, i)
 
         if(ball_hit == "left_wall"):
             ball_hit = "paddle"
